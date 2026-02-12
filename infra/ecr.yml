@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ECR Repository for Photo Sharing App Backend
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: photo-share
+
+Resources:
+  BackendInternalRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub ${EnvironmentName}-backend
+
+Outputs:
+  RepositoryUri:
+    Value: !GetAtt BackendInternalRepo.RepositoryUri

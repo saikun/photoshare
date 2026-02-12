@@ -1,0 +1,53 @@
+name: Infrastructure Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'infra/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: Deploy VPC
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-vpc
+        template: infra/vpc.yml
+        parameter-overrides: EnvironmentName=photo-share
+
+    - name: Deploy S3 Buckets
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-s3
+        template: infra/s3.yml
+        parameter-overrides: EnvironmentName=photo-share
+
+    - name: Deploy DynamoDB
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-dynamodb
+        template: infra/dynamodb.yml
+        parameter-overrides: EnvironmentName=photo-share
+
+    - name: Deploy ECR
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-ecr
+        template: infra/ecr.yml
+        parameter-overrides: EnvironmentName=photo-share
+    
+    # Note: ALB, ECS, and CloudFront requiring outputs from previous stacks would typically use a script or proper stack nesting/exports.
+    # For this simplified workflow, we are deploying the base layers. 
+    # Validating complex dependencies often requires a more orchestrated approach (e.g. CDK or a script).

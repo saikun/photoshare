@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: DynamoDB Table for Photo Sharing App
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: photo-share
+
+Resources:
+  PhotoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Photos
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+Outputs:
+  PhotoTableName:
+    Value: !Ref PhotoTable
