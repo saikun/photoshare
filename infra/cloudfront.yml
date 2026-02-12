@@ -13,6 +13,7 @@ Parameters:
     Default: http://photo-share-frontend-789613278086-ap-northeast-1.s3-website-ap-northeast-1.amazonaws.com
   BackendALBDNS:
     Type: String
+    Default: photo-share-alb-1440701134.ap-northeast-1.elb.amazonaws.com
 
 Resources:
   CloudFrontDistribution:
