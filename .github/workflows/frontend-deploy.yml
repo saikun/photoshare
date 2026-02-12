@@ -27,22 +27,15 @@ jobs:
         cd frontend
         npm run build
 
-    - name: Deploy to S3
-      uses: jakejarvis/s3-sync-action@master
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        args: --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.FRONTEND_BUCKET_NAME }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'ap-northeast-1'
-        SOURCE_DIR: 'frontend/out'
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: Deploy to S3
+      run: aws s3 sync frontend/out s3://${{ secrets.FRONTEND_BUCKET_NAME }} --delete
 
     - name: Invalidate CloudFront
-      uses: chetan/invalidate-cloudfront-action@v2
-      env:
-        DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-        PATHS: "/*"
-        AWS_REGION: 'ap-northeast-1'
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
