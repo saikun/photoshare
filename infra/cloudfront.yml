@@ -7,6 +7,7 @@ Parameters:
     Default: photo-share
   FrontendBucketName:
     Type: String
+    Default: photo-share-frontend-789613278086-ap-northeast-1
   FrontendBucketWebsiteURL:
     Type: String
     Default: http://photo-share-frontend-789613278086-ap-northeast-1.s3-website-ap-northeast-1.amazonaws.com

@@ -30,7 +30,8 @@ function Update-YamlParam {
     
     # Pattern to find the parameter definition and insert/update Default
     # Case 1: Default already exists - use non-greedy matching for the value
-    $patternExists = "(?s)(${ParamName}:\s*\n\s*Type:.*?\n\s*)Default:[^\r\n]*"
+    # Fixed regex to not cross newlines into other parameters (Type:[^\n]*)
+    $patternExists = "(?s)(${ParamName}:\s*\n\s*Type:[^\n]*\n\s*)Default:[^\r\n]*"
     if ($content -match $patternExists) {
         $content = $content -replace $patternExists, "`$1Default: $NewValue"
         Write-Host "Updated $ParamName in $FilePath" -ForegroundColor Green
@@ -55,6 +56,7 @@ Write-Host "Fetching AWS CloudFormation Outputs..." -ForegroundColor Cyan
 $VpcId = Get-StackOutput -StackName "photo-share-vpc" -OutputKey "VPC"
 $PublicSubnets = Get-StackOutput -StackName "photo-share-vpc" -OutputKey "PublicSubnets"
 $FrontendBucketUrl = Get-StackOutput -StackName "photo-share-s3" -OutputKey "FrontendBucketWebsiteURL"
+$FrontendBucketName = Get-StackOutput -StackName "photo-share-s3" -OutputKey "FrontendBucketName"
 $DataBucketName = Get-StackOutput -StackName "photo-share-s3" -OutputKey "DataBucketName"
 $RepositoryUri = Get-StackOutput -StackName "photo-share-ecr" -OutputKey "RepositoryUri"
 
@@ -74,11 +76,11 @@ Update-YamlParam "infra/ecs.yml" "TargetGroupArn" $TargetGroupArn
 
 # Update cloudfront.yml
 Update-YamlParam "infra/cloudfront.yml" "FrontendBucketWebsiteURL" $FrontendBucketUrl
+Update-YamlParam "infra/cloudfront.yml" "FrontendBucketName" $FrontendBucketName
 
 Write-Host "Done updating YAML files!" -ForegroundColor Cyan
 
 # Fetch additional outputs for GitHub Secrets
-$FrontendBucketName = Get-StackOutput -StackName "photo-share-s3" -OutputKey "FrontendBucketName"
 $CloudFrontDistId = Get-StackOutput -StackName "photo-share-cloudfront" -OutputKey "DistributionId"
 
 Write-Host "`n--------------------------------------------------" -ForegroundColor White

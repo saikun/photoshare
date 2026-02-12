@@ -13,6 +13,7 @@ Parameters:
     Default: subnet-025746880d48319c3,subnet-0973f1a35f45e0a4b
   TargetGroupArn:
     Type: String
+    Default: arn:aws:elasticloadbalancing:ap-northeast-1:789613278086:targetgroup/photo-share-tg/acd0fa2ce10f3c75
   RepositoryUri:
     Type: String
     Default: 789613278086.dkr.ecr.ap-northeast-1.amazonaws.com/photo-share-backend
