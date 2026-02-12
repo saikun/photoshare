@@ -35,8 +35,11 @@ func main() {
 	})
 
 	// Routes
-	r.POST("/upload", handlers.UploadPhoto)
-	r.GET("/photos", handlers.GetFeed)
+	api := r.Group("/api")
+	{
+		api.POST("/upload", handlers.UploadPhoto)
+		api.GET("/photos", handlers.GetFeed)
+	}
 
 	log.Println("Server starting on :8080")
 	r.Run(":8080")

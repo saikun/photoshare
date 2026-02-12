@@ -62,6 +62,7 @@ $RepositoryUri = Get-StackOutput -StackName "photo-share-ecr" -OutputKey "Reposi
 
 # Fetch ALB Output (might fail if not deployed yet)
 $TargetGroupArn = Get-StackOutput -StackName "photo-share-alb" -OutputKey "TargetGroupArn"
+$BackendALBDNS = Get-StackOutput -StackName "photo-share-alb" -OutputKey "LoadBalancerDNS"
 
 # Update alb.yml
 Update-YamlParam "infra/alb.yml" "VpcId" $VpcId
@@ -77,6 +78,7 @@ Update-YamlParam "infra/ecs.yml" "TargetGroupArn" $TargetGroupArn
 # Update cloudfront.yml
 Update-YamlParam "infra/cloudfront.yml" "FrontendBucketWebsiteURL" $FrontendBucketUrl
 Update-YamlParam "infra/cloudfront.yml" "FrontendBucketName" $FrontendBucketName
+Update-YamlParam "infra/cloudfront.yml" "BackendALBDNS" $BackendALBDNS
 
 Write-Host "Done updating YAML files!" -ForegroundColor Cyan
 
