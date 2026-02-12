@@ -48,6 +48,24 @@ jobs:
         template: infra/ecr.yml
         parameter-overrides: EnvironmentName=photo-share
     
-    # Note: ALB, ECS, and CloudFront requiring outputs from previous stacks would typically use a script or proper stack nesting/exports.
-    # For this simplified workflow, we are deploying the base layers. 
-    # Validating complex dependencies often requires a more orchestrated approach (e.g. CDK or a script).
+    - name: Deploy ALB
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-alb
+        template: infra/alb.yml
+        parameter-overrides: EnvironmentName=photo-share
+
+    - name: Deploy ECS Service
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-ecs
+        template: infra/ecs.yml
+        parameter-overrides: EnvironmentName=photo-share
+        capabilities: CAPABILITY_NAMED_IAM
+
+    - name: Deploy CloudFront
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: photo-share-cloudfront
+        template: infra/cloudfront.yml
+        parameter-overrides: EnvironmentName=photo-share
