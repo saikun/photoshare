@@ -7,8 +7,10 @@ Parameters:
     Default: photo-share
   VpcId:
     Type: String
+    Default: vpc-01525b822fdd8feea
   PublicSubnets:
     Type: List<AWS::EC2::Subnet::Id>
+    Default: subnet-025746880d48319c3,subnet-0973f1a35f45e0a4b
 
 Resources:
   LoadBalancerSecurityGroup:
