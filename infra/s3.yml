@@ -47,7 +47,7 @@ Resources:
           - AllowedHeaders: ['*']
             AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD']
             AllowedOrigins: ['*']
-          MaxAge: 3000
+            MaxAge: 3000
 
   DataBucketPolicy:
     Type: AWS::S3::BucketPolicy
