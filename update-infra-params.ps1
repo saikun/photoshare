@@ -29,8 +29,8 @@ function Update-YamlParam {
     $content = Get-Content $FilePath -Raw
     
     # Pattern to find the parameter definition and insert/update Default
-    # Case 1: Default already exists
-    $patternExists = "(?s)(${ParamName}:\s*\n\s*Type:.*?\n\s*)Default:.*"
+    # Case 1: Default already exists - use non-greedy matching for the value
+    $patternExists = "(?s)(${ParamName}:\s*\n\s*Type:.*?\n\s*)Default:[^\r\n]*"
     if ($content -match $patternExists) {
         $content = $content -replace $patternExists, "`$1Default: $NewValue"
         Write-Host "Updated $ParamName in $FilePath" -ForegroundColor Green
