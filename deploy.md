@@ -4,7 +4,11 @@ This guide describes how to deploy the infrastructure and application.
 
 ## Prerequisites
 - AWS CLI installed and configured.
-- GitHub Repository Secrets set (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`).
+- **GitHub Repository Secrets**:
+    - `AWS_ACCESS_KEY_ID`: Your AWS Access Key.
+    - `AWS_SECRET_ACCESS_KEY`: Your AWS Secret Key.
+    - `FRONTEND_BUCKET_NAME`: The S3 Bucket name for the frontend (Get this from script output or CloudFormation).
+    - `CLOUDFRONT_DISTRIBUTION_ID`: The ID of your CloudFront distribution (Get this from script output or CloudFormation).
 
 ## 1. Initial Infrastructure Deployment
 The initial base stacks (VPC, S3, DynamoDB, ECR) are deployed automatically by the `Infrastructure Deploy` workflow when files in `infra/` are pushed.

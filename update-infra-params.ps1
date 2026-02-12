@@ -75,4 +75,25 @@ Update-YamlParam "infra/ecs.yml" "TargetGroupArn" $TargetGroupArn
 # Update cloudfront.yml
 Update-YamlParam "infra/cloudfront.yml" "FrontendBucketWebsiteURL" $FrontendBucketUrl
 
-Write-Host "Done!" -ForegroundColor Cyan
+Write-Host "Done updating YAML files!" -ForegroundColor Cyan
+
+# Fetch additional outputs for GitHub Secrets
+$FrontendBucketName = Get-StackOutput -StackName "photo-share-s3" -OutputKey "FrontendBucketName"
+$CloudFrontDistId = Get-StackOutput -StackName "photo-share-cloudfront" -OutputKey "DistributionId"
+
+Write-Host "`n--------------------------------------------------" -ForegroundColor White
+Write-Host "REQUIRED GITHUB SECRETS" -ForegroundColor Yellow
+Write-Host "Please add the following secrets to your GitHub Repository:" -ForegroundColor White
+if ($FrontendBucketName) {
+    Write-Host "FRONTEND_BUCKET_NAME: $FrontendBucketName" -ForegroundColor Green
+}
+else {
+    Write-Host "FRONTEND_BUCKET_NAME: (Deploy 'Infra' first to get this)" -ForegroundColor Gray
+}
+if ($CloudFrontDistId) {
+    Write-Host "CLOUDFRONT_DISTRIBUTION_ID: $CloudFrontDistId" -ForegroundColor Green
+}
+else {
+    Write-Host "CLOUDFRONT_DISTRIBUTION_ID: (Deploy 'CloudFront' first to get this)" -ForegroundColor Gray
+}
+Write-Host "--------------------------------------------------`n" -ForegroundColor White
