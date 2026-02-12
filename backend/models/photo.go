@@ -5,4 +5,5 @@ type Photo struct {
 	URL       string `json:"url" dynamodbav:"url"`
 	Filename  string `json:"filename" dynamodbav:"filename"`
 	CreatedAt string `json:"createdAt" dynamodbav:"createdAt"`
+	Favorites int    `json:"favorites" dynamodbav:"favorites"`
 }

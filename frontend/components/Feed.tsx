@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import api from '../lib/api';
-import { X } from 'lucide-react';
+import { X, Heart } from 'lucide-react';
 
 interface Photo {
     id: string;
     url: string;
     filename: string;
     createdAt: string;
+    favorites: number;
 }
 
 export default function Feed({ keyProp }: { keyProp: number }) {
@@ -20,6 +21,27 @@ export default function Feed({ keyProp }: { keyProp: number }) {
             setPhotos(res.data || []);
         });
     }, [keyProp]);
+
+    const handleFavorite = async (photoId: string) => {
+        // Optimistic update
+        setPhotos((prev) =>
+            prev.map((p) =>
+                p.id === photoId ? { ...p, favorites: (p.favorites || 0) + 1 } : p
+            )
+        );
+
+        try {
+            await api.post(`/photos/${photoId}/favorite`);
+        } catch (error) {
+            console.error('Failed to favorite photo', error);
+            // Revert on error
+            setPhotos((prev) =>
+                prev.map((p) =>
+                    p.id === photoId ? { ...p, favorites: (p.favorites || 0) - 1 } : p
+                )
+            );
+        }
+    };
 
     return (
         <>
@@ -36,6 +58,16 @@ export default function Feed({ keyProp }: { keyProp: number }) {
                             alt={photo.filename}
                             className="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-110"
                         />
+                        <div
+                            className="absolute bottom-2 right-2 flex items-center bg-white bg-opacity-75 rounded-full px-2 py-1 shadow-sm hover:bg-opacity-100 transition-all"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleFavorite(photo.id);
+                            }}
+                        >
+                            <Heart size={16} className="text-red-500 mr-1 fill-current" />
+                            <span className="text-xs font-semibold text-gray-700">{photo.favorites || 0}</span>
+                        </div>
                     </div>
                 ))}
             </div>

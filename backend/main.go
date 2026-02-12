@@ -39,6 +39,7 @@ func main() {
 	{
 		api.POST("/upload", handlers.UploadPhoto)
 		api.GET("/photos", handlers.GetFeed)
+		api.POST("/photos/:id/favorite", handlers.IncrementFavorite)
 	}
 
 	log.Println("Server starting on :8080")
